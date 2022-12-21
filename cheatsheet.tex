@@ -1,0 +1,338 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.75in]{geometry}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{courier}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{forest}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tabularx}
+
+\renewcommand{\tt}{\ttfamily \small}
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
+\lstset{
+        basicstyle=\ttfamily,
+        breaklines=true,
+        numbers=left,
+        language=python,
+        showstringspaces=false,
+        keywordstyle=\color{deepblue},
+        emphstyle=\color{deepred},    % Custom highlighting style
+        stringstyle=\color{deepgreen},
+    }
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Page \thepage}   
+\lhead{Ben Kettle}
+\fancyhead[C]{6.006 Cheat Sheet}
+
+\begin{document}
+\section{Sorting Algorithms}
+
+\begin{center}
+    \begin{tabular}{l||c|c|c|l||} 
+        Algorithm & Time $O(\cdot)$ & In-place? & Stable? & Comments \\
+        \hline \hline Insertion Sort & $n^{2}$ & $Y$ & $Y$ & $O(n k)$ for $k$ -proximate \\
+        \hline Selection Sort & $n^{2}$ & $Y$ & $N$ & $O(n)$ swaps \\
+        \hline Merge Sort & $n \log n$ & $N$ & $Y$ & stable, optimal comparison \\
+        \hline AVL Sort & $n \log n$ & $N$ & $Y$ & good if also need dynamic \\
+        \hline Heap Sort & $n \log n$ & $Y$ & $N$ & low space, optimal comparison \\
+        \hline Counting Sort & $n+u$ & $N$ & $Y$ & $O(n)$ when $u=O(n)$. $u=max(vals)$ \\
+        \hline Radix Sort & $n+n \log _{n} u$ & $N$ & $Y$ & $O(n)$ when $u=O\left(n^{c}\right)$ \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\noindent\begin{tabularx}{\textwidth}{XXX}
+    \textbf{Selection Sort} finds largest number in remainder of the list, then move it to the front. Recurse. & 
+    \textbf{Merge Sort} recursively sorts halves of the list, then merges them with an $O(n)$ two finger alg. &
+    \textbf{Insertion Sort} Recursively sorts the prefix, then adds and sorts in one item at a time. \\ \\
+    \textbf{Counting Sort} basically uses a direct access array, with a chain in each slot. Insert then read back. &
+    \textbf{AVL Sort} inserts into a set AVL and reads it back. Any set data structure defines a sorting alg. &
+    \textbf{Heap Sort} is priority queue sort but with a max heap. Build then repeatedly delete. \\ \\
+\end{tabularx}
+
+\noindent\begin{tabularx}{\textwidth}{X}
+    \textbf{Radix Sort} uses tuple sort with auxillary counting sort to sort tuples. Sort from least significant key to most significant key. If every key $< n^c$ for some $0<c=\log_n(u)$, at most $c$ digits base $n$. Then write it as a $c$ element tuple and sort each digit in $O(c)$ time. If $c$ is constant so each key is $\leq n^c$, linear time.
+\end{tabularx}
+
+
+\section{Data Structures}
+\subsection{Sequences}
+\begin{center}
+    \begin{tabular}{l|||c||c||c|c|c|||} 
+        & \multicolumn{5}{c|||} { Operations $O(\cdot)$} \\
+       \cline{2-6}  \multirow{2}{*}{\makecell{Sequence \\ Data Structure}} & Container & Static & \multicolumn{3}{c|||} { Dynamic } \\
+       \cline{2-6}  & \tt build(x) & \makecell{{\tt get\_at()} \\ {\tt set\_at(i,x)}} & \makecell{\tt insert\_first(x) \\ \tt delete\_first()} & \makecell{\tt insert\_last(x) \\ \tt delete\_last()} & \makecell{\tt insert\_at(i,x) \\ \tt delete\_at(1)} \\
+       \hline\hline Array & $n$ & 1 & $n$ & $n$ & $n$ \\
+       \hline Linked List & $n$ & $n$ & 1 & $n$ & $n$ \\
+       \hline Dynamic Array & $n$ & 1 & $n$ & $1_{(a)}$ & $n$ \\
+       \hline Sequence AVL & $n$ & $\log n$ & $\log n$ & $\log n$ & $\log n$ \\
+       \hline
+   \end{tabular}
+\end{center}
+
+
+\subsection{Sets}
+\begin{center}
+    \begin{tabular}{l|||c||c||c||c|c|||} 
+        & \multicolumn{5}{c|||} { Operations $O(\cdot)$} \\
+        \cline{2-6} \multirow{2}{*}{\makecell{Set \\ Data Structure}} & Container & Static & Dynamic & \multicolumn{2}{c|||}{Order} \\
+        \cline{2-6} & \tt build(x) & \tt find(k) & \makecell{\tt insert(x) \\ \tt delete(k)} & \makecell{\tt find\_min() \\ \tt find\_max()} & \makecell{\tt find\_prev(k) \\ \tt find\_next(k)} \\
+        \hline\hline Array & $n$ & $n$ & $n$ & $n$ & $n$ \\
+        \hline Sorted Array & $n \log n$ & $\log n$ & $n$ & 1 & $\log n$ \\
+        \hline Direct Access & $u$ & 1 & 1 & $u$ & $u$ \\
+        \hline Hash Table & $n_{(e)}$ & $1_{(e)}$ & $1_{(a)(e)}$ & $n$ & $n$ \\
+        \hline Set AVL & $n \log n$ & $\log n$ & $\log n$ & $\log n$ & $\log n$ \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Priority Queues}
+\begin{center}
+    \begin{tabular}{l|||c|c|c|c|||}
+        \multirow{2}{*}{\makecell{Priority Queue \\ Data Structure}} & \multicolumn{4}{c|||} { Operations $O(\cdot)$} \\
+        \cline{2-5} & \tt build(x) & \tt insert(x) & \tt delete\_max() & \tt find\_max() \\
+        \hline \hline Dynamic Array & $n$ & $1_{(a)}$ & $n$ & $n$ \\
+        \hline Sorted Dyn. Array & $n \log n$ & $n$ & $1_{(a)}$ & 1 \\
+        \hline Set AVL & $n \log n$ & $\log n$ & $\log n$ & $\log n$ \\
+        \hline Binary Heap & $n$ & $\log n_{(a)}$ & $\log n_{(a)}$ & 1 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\section{Binary Trees}
+\subsection{Traversal Order}
+For every node $x$, every node in $x$'s left subtree is before $x$. Every node in $x$'s right subtree is after $x$. Recursive.
+\subsection{Binary Search Trees}
+These have a key for each node, and are sorted by these keys. For every node $i$, all keys in left subtree $\leq$ $i$'s key, which is less than or equal to every key in the right subtree. This way, they are returned in order when you traverse.
+\subsection{Rotations}
+A node is height-balanced if its \textbf{skew} = height(right subtree) - height(left subtree) is -1, 1, or 0. AVL trees can be balanced using rotations! Rotations preserve the traversal order while changing the depth of the subtrees. Rotate right is moving from left to right below, and rotate left is moving right to left.
+
+\begin{center}
+\begin{tabular}{ccc}
+    \begin{forest}
+        [y, circle,draw
+            [x, circle,draw
+                [A, rectangle,draw]
+                [B, rectangle,draw]
+            ]
+            [C, rectangle,draw]
+        ]
+    \end{forest} &
+
+    \hspace{1.5in}
+    
+    \begin{forest}
+        [x, circle,draw
+            [A, rectangle,draw]
+            [y, circle,draw
+                [B, rectangle,draw]
+                [C, rectangle,draw]
+            ]
+        ]
+    \end{forest} & 
+
+    
+    % \begin{tabular}{c}
+    %     \tt rotate\_right(x) \\
+    %     $\longrightarrow$ \\
+    %     \tt rotate\_left(y) \\
+    %     $\longleftarrow$
+    % \end{tabular} & 
+
+    
+\end{tabular}
+\end{center}
+
+\subsection{Augmentations}
+Augmentations need to be based on the subtree nodes, and be stores at each node. To augment, state the subtree property $P(x)$ you want to store at each node $x$, and show how to compute $P(x)$ based on augmentations of $x$'s children in $\mathbf{O(1)}$ time. 
+
+\section{Recurrences}
+\subsection{Master Theorem}
+Used for solving recurrences where recursive calls decrease by a constant factor. Given a recurrence relation of the form $T(n) = aT(n/b)+f(n)$, we can apply the below, given a few restrictions:
+\begin{itemize}[noitemsep,topsep=1pt]
+    \item branching factor $a \geq 1$
+    \item problem size reduction factor $b > 1$
+    \item asymptotically non-negative $f(n)$.
+\end{itemize}
+\begin{center}
+    \begin{tabular}{c|l|l} 
+        case & solution & conditions \\
+        \hline 1 & $T(n)=\Theta\left(n^{\log _{b} a}\right)$ & $f(n)=O\left(n^{\log _{b} a-\varepsilon}\right)$ for some constant $\varepsilon>0$ \\
+        \hline 2 & $T(n)=\Theta\left(n^{\log _{b} a} \log ^{k+1} n\right)$ & $f(n)=\Theta\left(n^{\log _{b} a} \log ^{k} n\right)$ for some constant $k \geq 0$ \\
+        \hline 3 & $T(n)=\Theta(f(n))$ & $f(n)=\Omega\left(n^{\log _{b} a+\varepsilon}\right)$ for some constant $\varepsilon>0$ \\
+        & & and $a f(n / b)<c f(n)$ for some constant $0<c<1$
+    \end{tabular}
+\end{center}
+
+When $f(n)$ is polynomial, such that the recurrence has the form $aT(n/b) + \Theta(n^c)$ for some constant $c \geq 0$:
+
+\begin{center}
+    \begin{tabular}{c|l|l|l} 
+        case & solution & conditions & intuition \\
+        \hline 1 & $T(n)=\Theta\left(n^{\log _{b} a}\right)$ & $c<\log _{b} a$ & Work done at leaves dominates \\
+        \hline 2 & $T(n)=\Theta\left(n^{c} \log n\right)$ & $c=\log _{b} a$ & Work balanced across the tree \\
+        \hline 3 & $T(n)=\Theta\left(n^{c}\right)$ & $c>\log _{b} a$ & Work done at root dominates
+    \end{tabular}
+\end{center}
+
+\subsection{Substitution}
+Basically just guess and plug in your guess times a constant for $T(n)$. Like if you're guessing $O(n)$, put $cn$ for $T(n)$ and $c(\frac{n}{2})$ for $T(\frac{n}{2})$. Guessing $T(n)=O(n\log n)$ for $T(n) = 2T(n/2) + O(n)$:
+\[ T(n) = n \log n \longrightarrow cn \log n = O(n) + 2c(\frac{n}{2}) \log\frac{n}{2} \longrightarrow cn \log 2 = O(n) \]
+
+\newpage
+\section{Graph Algorithms}
+\begin{center}
+\begin{tabular}{l|l|l|c|l} 
+    \multicolumn{2}{l|}{Restrictions} & \multicolumn{3}{c} { SSSP Algorithm } \\
+    \hline Graph & Weights & Name & Running Time $O(\cdot)$ & Notes \\
+    \hline \hline DAG & Any & DAG Relaxation & $|V|+|E|$ & Relax in topo ordering\\
+    General & Unweighted & BFS & $|V|+|E|$ & \\
+    General & Non-negative & Dijkstra & $|V| \log |V|+|E|$ & With Fibonacci heap PQ \\
+    General & Any & Bellman-Ford & $|V| \cdot|E|$ & Duplicate $\rightarrow$ DAG Relax\\
+    \hline
+    General & Any & Johnson's (\textbf{APSP}) & $|V|^2 \log |V| + |V||E|$ & B-F then $|V|$ Dijkstras
+\end{tabular}
+
+\end{center}
+
+\noindent\begin{tabularx}{\textwidth}{XXX}
+    \textbf{BFS} searches in levels of increasing distance, and does not revisit seen nodes. Does not explore all paths. Returns parent tree of shortest paths. &
+    \textbf{DFS} touches all nodes reachable from $s$, does not revisit nodes. Returns parent tree, but not shortest. Can find cycles by checking if edges match topo order.&
+    \textbf{DAG Relaxation} finds a topo ordering, then relaxes edges in that order. Relax $(u,v,x)$ means $\delta(u,v)$ becomes min of $\delta(u,v)$ and $\delta(u,x) + w(x,v)$. Enforces triangle ineq. \\\\
+    \textbf{Dijkstra} explores all edges from source, then from each subsequent node in order of node's distance from source. Order of node exploration mimics water flowing. Whenever source node is found, must be shortest path. $O(|V|^2)$ w/ array PQ, $O(|E|\log|V|)$ w/ bin. heap PQ.&
+    \textbf{Bellman-Ford} structures graph into a form usable by DAG relaxation. Duplicates $|V|+1$ times (max $|V|$ edges), connects each $v$ to self and adj. vert. in next level. Prunes $G$ to reachable subgraph for $|V|=O(|E|)$. If $\delta_{|V|} < \delta_{|V|-1}$, must be neg. wt. cycle.&
+    \textbf{Johnson's} runs B-F from supernode $x$ with $w(x,v) = 0\;\forall\, v \in V$ to find \emph{potential} of each node $h(v) = \delta(S,v)$. Removes $x$ and reweights $w(u,v) = w(u,v) + h(u) - h(v)$ for all edges. Weights now non-neg., so run Dijkstra from each $v$ to find $\delta '$, then $\delta(u,v) = \delta'(u,v) - h(u)+h(v)$. \\
+\end{tabularx}
+
+\subsection{Problem Types}
+\begin{itemize}[noitemsep]
+    \item \textbf{Single Source Reachability}: finds which vertices are accessible from a source. Solved by BFS/DFS.
+    \item \textbf{Cycle Detection}: determining whether a cycle exists in a graph. Solved by DFS looking for back edges.
+    \item \textbf{Connected Components}: find subgraphs of $G$ that are connected. Solved by Full-DFS/Full-BFS.
+    \item \textbf{Single Source Shortest Paths (SSSP)}: finds the shortest paths to every $v$ in a graph $G$ from a source $s$.
+    \item \textbf{All Pairs Shortest Paths (APSP)}: finds the shortest paths between every pair of nodes $u,v$ in $G$.
+\end{itemize}
+\subsection{Definitions}
+\begin{itemize}[noitemsep]
+    \item \textbf{Simple Path}: a path that does not repeat any vertices.
+    \item \textbf{Full-\{DFS/BFS\}} repeats DFS/BFS until all nodes have been touched.
+    \item \textbf{Connected Graph}: an undirected graph in which there is a path between every pair of nodes.
+    \item \textbf{Strongly Connected}: every node is reachable from every other. Note this implies $|E|=\Omega(|V|)$.
+    \item \textbf{Dense Graph}: defined by $|E| = \Omega(|V|^2)$.
+    \item \textbf{Sparse Graph}: defined by $|E| = O(|V|)$. \textbf{Planar Graphs} are sparse.
+    \item \textbf{Directed Acyclic Graph (DAG)}: Contains no directed cycle.
+    \item \textbf{Finishing Order}: The order in which a Full-DFS \emph{finishes} visiting each vertex in $G$.
+    \item \textbf{Topological Order:} an ordering $f$ such that every edge $(u,v) \in E$ satisfies $f(u)<f(v)$.
+    \begin{itemize}[topsep=0pt,noitemsep]
+        \item The reverse of a \textit{finishing order} is a topological order.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Tricks}
+\begin{itemize}[noitemsep]
+    \item \textbf{Graph Duplication}: for any problem with \emph{state}, graph duplication is a good idea. Create one copy of the vertexes for each state, and connect them according to state transitions. Then, run shortest path algorithm.
+    \item \textbf{Supernodes}: creating a "supernode" with edges to mulptiple other nodes in the graph can speed up many algorithms instead of running a SP alg from each node. However, lose specificity.
+    \item \textbf{Constant Bounded Weights}: if the weights in a graph are bounded by $O(1)$, SSSP can be solved with BFS by "splitting" edges into multiple edges between dummy vertices to create strictly weight-1 edges.
+    \item \textbf{Reversing Edges}: to find shortest paths \emph{to} a single node, can reverse all path directions and run SSSP.
+\end{itemize}
+
+\newpage
+\section{Dynamic Programming}
+
+\begin{minipage}[t]{0.49\textwidth}
+    \subsection{General Approach}
+    Dynamic programming problems can be described using the SRTBOT acronym.
+
+    \vspace{3mm}
+    \textbf{Subproblem}: Define the subproblem(s) that must be calculated in English. 
+    \begin{itemize}[topsep=2pt, noitemsep]
+        \item this should always be like a number or T/F value, not the path to get there.
+        \item if using multiple subproblems, it can often be simpler to combine them into a single subproblem with an additional parameter.
+        \item often relies on an ``index'' parameter.
+        \item typically prefix/suffix/substring
+    \end{itemize}
+
+    \vspace{2mm}\textbf{Relate}: Define the recursive relationship between subproblems mathematically; the way that each subproblem relies on a smaller subproblem.
+
+    \vspace{2mm}\textbf{Topological Order}: Show that the graph formed by the subproblems' dependencies is acyclic.
+    \begin{itemize}[topsep=2pt, noitemsep]
+        \item often enough to say ``$i$ is strictly decreasing'' or ``$i+j$ is strictly increasing''.
+    \end{itemize}
+
+    \vspace{2mm}\textbf{Base Cases}: Define the cases where you know the answer to the subproblem without relying on other subproblems. Typically when the ``index'' reaches the end/beginning.
+
+    \vspace{2mm}\textbf{Original Problem}: Give the subproblem or operation between multiple subproblems that give the answer to the original problem.
+    \begin{itemize}[topsep=2pt, noitemsep]
+        \item can be like a max over all possible starting positions
+        \item specify top-down or bottom-up 
+        \item specify using parent pointers if need the actual path.
+    \end{itemize}
+
+    \vspace{2mm}\textbf{Time Analysis}: Find the time of the whole operation
+    \begin{itemize}[topsep=2pt, noitemsep]
+        \item \# of subproblems times time per subproblem
+        \item make sure to account for solving original
+    \end{itemize}
+
+    \subsection{Examples}
+    \subsubsection{Longest Common Subsequence}
+    Given two strings $A$ and $B$, find a longest subsequence of $A$ that is also a subsequence of $B$.
+
+    Idea: keep starting indices in $A$ and $B$, check first letters. If match, in subsequence, if not, try next letter in each.
+
+    
+\end{minipage}
+\hspace{.02\textwidth}
+\begin{minipage}[t]{0.5\textwidth}
+    \section{Complexity}
+    Focus on \textbf{decision problems}: assignment of input to yes/no. A decision problem is \textbf{decidable} if there exists constant length code to solve the problem in finite time.
+    \subsection{Classifications}
+    We classify decision problems into three main classes where $\textbf{R} \subsetneq \textbf{EXP} \subsetneq \textbf{P}$, with input size $n$:
+    \begin{itemize}[noitemsep, topsep=0pt]
+        \item R: broadest, all problems decidable in finite time.
+        \item EXP: problems decidable in exponential time $2^{n^{O(1)}}$
+        \item P: problems decidable in polynomial time $n^{O(1)}$
+    \end{itemize}
+
+    There is another class of problems called \textbf{NP} for Nondeterministic Polynomial Time. Regardless of how long it takes to solve the problem, problems in \textbf{NP can be verified in polynomial time}:
+    \begin{itemize}[topsep=0pt, noitemsep]
+        \item Given an input consisting of an instance $I$ of the problem, and a certificate $c$ with length $O(|I|^k)$, there exists an algorithm to verify $c$, returning whether the instance is a YES or a NO in $O(|I|^k)$ time.
+        \item For example, the certificate of checking whether a shortest path with length $<d$ exists would be the shortest path itself.
+        \begin{itemize}[topsep=0pt, noitemsep]
+            \item If YES and $c$ is correct, $c$ can be verified as a correct solution easily
+            \item If YES but $c$ is invalid (ie a path longer than $d$), return no
+            \item If NO, all $c$ are invalid. 
+        \end{itemize}
+        \item $\textbf{P} \subset \textbf{NP}$, but unknown if $\textbf{P} = \textbf{NP}$. So we don't know if there are problems that can be checked in polynomial time, but cannot be solved in polynomial time.
+    \end{itemize}
+
+    \subsection{Reductions}
+    Problem $A$ can be solved by converting it into a problem $B$ you know how to solve. Called \textbf{reducing} $A$ to $B$.
+    \begin{itemize}[noitemsep, topsep=0pt]
+        \item The solution to some instance of $B$ can be used to find a solution to $A$.
+        \item $B$ must be \textbf{at least as hard} as $A$ then.
+        \item Some problems can be reduced to each other, meaning they are equal in hardness.
+    \end{itemize}
+
+    \subsection{NP-Complete and NP-Hard}
+    A problem is \textbf{NP-Hard} if all problems in NP can be reduced to that problem, and the reduction itself takes polynomial time. That means it's \textbf{at least as hard} as every problem in NP. 
+    
+    If a problem is in NP \textbf{and} is NP-Hard, it is termed NP-Complete. 
+    \begin{itemize}[topsep=0pt, noitemsep]
+        \item All NP-Complete problems are reducible to each other, equivalent in hardness.
+        \item NP-Complete problems are the hardest problems in NP.
+    \end{itemize}
+\end{minipage}
+
+
+\end{document}
